@@ -1,5 +1,5 @@
 import { Telegraf } from 'telegraf';
-//import { GoogleSheetsService } from './app/services/GoogleSheetsService';
+import { GoogleSheetsService } from './app/services/GoogleSheetsService';
 
 if (process.env.NODE_ENV !== 'production') {
     const dotenv = require('dotenv');
@@ -17,18 +17,18 @@ if (!botToken || !spreadsheetId) {
     const bot = new Telegraf(botToken);
 
     // Create GoogleSheetsService instance
-    //const googleSheetsService = await GoogleSheetsService.create();
-//
-    //// Handle document uploads
-    //bot.on('document', async (ctx) => {
-    //    const fileId = ctx.message.document.file_id;
-    //    
-    //    await googleSheetsService.handleExcelFile(
-    //        fileId,
-    //        ctx.telegram,
-    //        (message: string) => ctx.reply(message)
-    //    );
-    //});
+    const googleSheetsService = await GoogleSheetsService.create();
+
+    // Handle document uploads
+    bot.on('document', async (ctx) => {
+        const fileId = ctx.message.document.file_id;
+        
+        await googleSheetsService.handleExcelFile(
+            fileId,
+            ctx.telegram,
+            (message: string) => ctx.reply(message)
+        );
+    });
 
     // Handle status messages
     bot.on('message', (ctx) => {

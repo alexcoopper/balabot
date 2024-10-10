@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/bot.js",
+    "start": "node dist/bot.js & node dummy-server.js",
     "dev": "nodemon --watch 'src/**/*.ts' --exec \"./node_modules/.bin/ts-node\" src/bot.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "heroku-start": "heroku ps:scale web=1 --app balabot",
