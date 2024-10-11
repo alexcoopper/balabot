@@ -46,6 +46,7 @@ if (process.env.NODE_ENV === 'production') {
 
     // Exported function for Google Cloud Functions (Webhook)
     exports.telegramBot = functions.http('telegramBot', (req: any, res: any) => {
+        console.log('New webhook request:', req.body);
         bot.handleUpdate(req.body)
             .then(() => res.status(200).send('OK'))
             .catch(err => {
