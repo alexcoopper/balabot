@@ -27,7 +27,7 @@ bot.on('document', async (ctx) => {
     await googleSheetsService.handleExcelFile(
         fileId,
         ctx.telegram,
-        (message: string) => ctx.reply(message)
+        (message: string) => ctx.reply(message, { parse_mode: "MarkdownV2" })
     );
 });
 

@@ -1,4 +1,4 @@
-import { SheetName } from '../constants';
+import { GoogleSheetPageUrlTemplate, SheetName } from '../constants';
 import { ExcelParserFactory } from '../excel-parser/ExcelParserFactory';
 import { ExpenseFilterService } from './ExpenseFilterService';
 import { GoogleSheetsApiService } from './GoogleSheetsApiService';
@@ -36,11 +36,15 @@ export class GoogleSheetsService {
             // Process and upload data to Google Sheets
             const newRecordsCount = await this.WriteDataToSheet(buffer);
 
+            const url = GoogleSheetPageUrlTemplate.replace('{sheetId}', process.env.SPREADSHEET_ID || "");
+            let messageTemplate = "";
             if (newRecordsCount > 0) {
-                replyCallback(`Excel data uploaded to Google Sheets successfully! ${newRecordsCount} new record(s) added.`);
+                messageTemplate = `Excel data uploaded successfully! ${newRecordsCount} new record(s) added. You can review the updated data urlPart.`;
             } else {
-                replyCallback('Excel data was processed, but no new records were added to Google Sheets.');
+                messageTemplate = `Excel data was processed, but no new records were added to Google Sheets. You can review the existing data urlPart.`;
             }
+            messageTemplate = messageTemplate.replace(/([_*\[\]()~`>#+\-=|{}.!])/g, '\\$1');
+            replyCallback(messageTemplate.replace('urlPart', `[here](${url})`));
         } catch (error) {
             console.error('Error uploading to Google Sheets:', error);
             replyCallback('Failed to upload data to Google Sheets.');
