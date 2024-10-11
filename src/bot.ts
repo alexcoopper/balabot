@@ -20,6 +20,7 @@ const bot = new Telegraf(botToken);
 
 // Handle document uploads
 bot.on('document', async (ctx) => {
+    ctx.reply('Start uploading the Excel file...');
     const fileId = ctx.message.document.file_id;
     const googleSheetsService = await GoogleSheetsService.create();
 
