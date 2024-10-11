@@ -32,8 +32,11 @@ bot.on('document', async (ctx) => {
 
 // Handle status messages
 bot.on('message', (ctx) => {
-    if ('text' in ctx.message && ctx.message.text === 'status') {
-        ctx.reply('I am alive!');
+    if ('text' in ctx.message) {
+        const messageText = ctx.message.text.toLowerCase();
+        if (['status', 'stats'].includes(messageText)) {
+            ctx.reply('I am alive!');
+        }
     }
 });
 

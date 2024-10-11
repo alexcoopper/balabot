@@ -8,6 +8,6 @@
     "outDir": "./dist",
     "types": ["node"]
   },
-  "include": ["src/**/*", "dummy-server.js"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules"]
 }
