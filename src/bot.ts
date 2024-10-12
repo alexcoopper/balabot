@@ -1,7 +1,6 @@
 import { Telegraf } from 'telegraf';
 import * as functions from '@google-cloud/functions-framework'; // Google Cloud Functions framework
 import { AuthorizationMiddleware } from './app/middlewares/AuthorizationMiddleware';
-import { NotificationService } from './app/services/NotificationService';
 import { HttpService } from './app/services/HttpService';
 import { LogMiddleware } from './app/middlewares/LogMiddleware';
 import { ErrorMiddleware } from './app/middlewares/ErrorMiddleware';
@@ -44,7 +43,7 @@ if (process.env.NODE_ENV === 'production') {
 
     // Exported function for Google Cloud Scheduler (Scheduled Notifications)
     exports.scheduledNotification = functions.http('scheduledNotification', (req: any, res: any) => {
-        HttpService.handleScheduledNotification(res, NotificationService);
+        HttpService.handleScheduledNotification(req, res);
     });
 
 } else {
