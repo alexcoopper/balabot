@@ -69,8 +69,9 @@ export class GoogleSheetsService {
             await this.apiService.appendDataToSheet(newRecords, SheetName);
             // Optionally sort by date after appending
             await this.apiService.sortSheetByDate();
+            console.log(`WriteDataToSheet: Uploaded ${newRecords.length} record(s).`);
         } else {
-            console.log("No new records to append.");
+            console.log("WriteDataToSheet: No new records to append.");
         }
 
         return  newRecords.length;

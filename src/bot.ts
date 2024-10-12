@@ -1,6 +1,12 @@
 import { Telegraf } from 'telegraf';
-import { GoogleSheetsService } from './app/services/GoogleSheetsService';
 import * as functions from '@google-cloud/functions-framework'; // Google Cloud Functions framework
+import { AuthorizationMiddleware } from './app/middlewares/AuthorizationMiddleware';
+import { NotificationService } from './app/services/NotificationService';
+import { HttpService } from './app/services/HttpService';
+import { LogMiddleware } from './app/middlewares/LogMiddleware';
+import { ErrorMiddleware } from './app/middlewares/ErrorMiddleware';
+import { handleDocumentUpload } from './app/bot-handlers/documentHandler';
+import { handleMessage } from './app/bot-handlers/messageHandler';
 
 // Conditionally load environment variables in local development
 if (process.env.NODE_ENV !== 'production') {
@@ -15,31 +21,17 @@ if (!botToken || !spreadsheetId) {
     throw new Error('Bot token or Spreadsheet ID is not set. Please set both in environment variables.');
 }
 
+AuthorizationMiddleware.initialize();
+
 // Initialize the bot
 const bot = new Telegraf(botToken);
+bot.use(LogMiddleware.log);
+bot.use(AuthorizationMiddleware.authorize);
 
-// Handle document uploads
-bot.on('document', async (ctx) => {
-    ctx.reply('Start uploading the Excel file...');
-    const fileId = ctx.message.document.file_id;
-    const googleSheetsService = await GoogleSheetsService.create();
+bot.on('document', handleDocumentUpload);
+bot.on('message', handleMessage);
 
-    await googleSheetsService.handleExcelFile(
-        fileId,
-        ctx.telegram,
-        (message: string) => ctx.reply(message, { parse_mode: "MarkdownV2" })
-    );
-});
-
-// Handle status messages
-bot.on('message', (ctx) => {
-    if ('text' in ctx.message) {
-        const messageText = ctx.message.text.toLowerCase();
-        if (['status', 'stats'].includes(messageText)) {
-            ctx.reply('I am alive!');
-        }
-    }
-});
+bot.catch(ErrorMiddleware.handleError);
 
 // Determine whether to use webhook (production) or polling (development)
 if (process.env.NODE_ENV === 'production') {
@@ -47,14 +39,14 @@ if (process.env.NODE_ENV === 'production') {
 
     // Exported function for Google Cloud Functions (Webhook)
     exports.telegramBot = functions.http('telegramBot', (req: any, res: any) => {
-        console.log('New webhook request:', req.body);
-        bot.handleUpdate(req.body)
-            .then(() => res.status(200).send('OK'))
-            .catch(err => {
-                console.error('Error handling update:', err);
-                res.status(500).send('Internal Server Error');
-            });
+        HttpService.handleTelegramBot(req, res, bot);
     });
+
+    // Exported function for Google Cloud Scheduler (Scheduled Notifications)
+    exports.scheduledNotification = functions.http('scheduledNotification', (req: any, res: any) => {
+        HttpService.handleScheduledNotification(res, NotificationService);
+    });
+
 } else {
     console.log('Running in development mode with polling.');
 
@@ -67,4 +59,3 @@ if (process.env.NODE_ENV === 'production') {
     process.once('SIGINT', () => bot.stop('SIGINT'));
     process.once('SIGTERM', () => bot.stop('SIGTERM'));
 }
-
