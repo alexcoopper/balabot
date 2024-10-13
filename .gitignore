@@ -42,3 +42,4 @@ credentials_base64.txt
 src/app/services/credentials_g.json
 readme.md
 env-vars.json
+deploy.bat
