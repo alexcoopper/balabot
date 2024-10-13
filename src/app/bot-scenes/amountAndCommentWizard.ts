@@ -1,6 +1,7 @@
 import { Markup, Scenes } from 'telegraf';
-import { Expense, ExpenseOwner } from '../models';
+import { Expense } from '../models';
 import { GoogleSheetsService } from '../services/GoogleSheetsService';
+import { UserMappingService } from '../services/UserMappingService';
 
 export interface AmountWizardSession extends Scenes.WizardSessionData {
     amount?: string;
@@ -56,18 +57,17 @@ const handleConfirmationStep = async (ctx: Scenes.WizardContext<AmountWizardSess
         if (callbackData === 'confirm') {
             const googleSheetsService = await GoogleSheetsService.create();
 
-            const userMappings = await googleSheetsService.getUserExpenseMappings();
-            const username = ctx.from?.username || '';
-
-            const expenseOwner = userMappings[username];
+            const userId = ctx.from?.id || 0;
+            const expenseOwner = new UserMappingService().getOwnerByUserId(userId);
             if (!expenseOwner) {
                 await ctx.reply('Ви не маєте прав додавати витрати.');
                 return ctx.scene.leave();
             }
 
+            const username = ctx.from?.username || '';
             const expense = {
                 Date: new Date(),
-                Description: `готівка (${ctx.from?.username}): ` + ctx.scene.session.comment,
+                Description: `готівка (${username}): ` + ctx.scene.session.comment,
                 Sum: parseFloat(ctx.scene.session.amount || '0') * -1,
                 ExpenseOwner: expenseOwner,
             } as Expense;

@@ -1,4 +1,4 @@
-import { GoogleSheetPageUrlTemplate, SheetName, UserMappingsSheetRange } from '../constants';
+import { GoogleSheetPageUrlTemplate, SheetName } from '../constants';
 import { ExcelParserFactory } from '../excel-parser/ExcelParserFactory';
 import { BalanceSummary, Expense, ExpenseOwner } from '../models';
 import { ExpenseFilterService } from './ExpenseFilterService';
@@ -82,27 +82,6 @@ export class GoogleSheetsService {
         }
 
         return newRecords.length;
-    }
-
-    public async getUserExpenseMappings(): Promise<{ [username: string]: ExpenseOwner }> {
-        try {
-            const data = await this.apiService.getSheetData(UserMappingsSheetRange);
-
-            const userMappings: { [username: string]: ExpenseOwner } = {};
-
-            data.forEach((row: any[]) => {
-                if (row.length >= 2) {
-                    const [username, owner] = row;
-                    if (Object.values(ExpenseOwner).includes(owner as ExpenseOwner)) {
-                        userMappings[username] = owner as ExpenseOwner;
-                    }
-                }
-            });
-            return userMappings;
-        } catch (error) {
-            console.error('Error loading user mappings from Google Sheets:', error);
-            throw new Error('Failed to load user mappings.');
-        }
     }
 
     public async getBalanceByOwnerAndPeriod(owner: ExpenseOwner, period: string): Promise<BalanceSummary | undefined> {

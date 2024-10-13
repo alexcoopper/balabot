@@ -1,5 +1,6 @@
 import { Markup, Scenes } from 'telegraf';
 import { GoogleSheetsService } from '../services/GoogleSheetsService';
+import { UserMappingService } from '../services/UserMappingService';
 
 export interface BalanceWizardSession extends Scenes.WizardSessionData {
     period?: string;
@@ -25,9 +26,8 @@ const showBalanceStep = async (ctx: Scenes.WizardContext<BalanceWizardSession>) 
 
         const googleSheetsService = await GoogleSheetsService.create();
 
-        const userName = ctx.from?.username || '';
-        const userMappings = await googleSheetsService.getUserExpenseMappings();
-        const balanceOwner = userMappings[userName];
+        const userId = ctx.from?.id || 0;
+        const balanceOwner = new UserMappingService().getOwnerByUserId(userId);
 
         if (!balanceOwner) {
             await ctx.reply('У вас немає прав для перегляду балансу.');

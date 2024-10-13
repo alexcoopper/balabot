@@ -1,17 +1,12 @@
 import { Context, MiddlewareFn } from 'telegraf';
+import { UserMappingService } from '../services/UserMappingService';
 
 export class AuthorizationMiddleware {
-    private static authorizedUserIds: number[];
-
-    // Static method to initialize the class with authorized user IDs
-    public static initialize() {
-        this.authorizedUserIds = (process.env.AUTHORIZED_USERS || '').split(',').map(Number);
-    }
-
     // Check if the user is authorized (static method)
     private static isAuthorized(ctx: Context): boolean {
+        const users = new UserMappingService().getAllUsers();
         const userId = ctx.from?.id;
-        return this.authorizedUserIds.includes(userId || 0);
+        return users.includes(userId || 0);
     }
 
     // Send unauthorized message (static method)

@@ -4,7 +4,6 @@ import * as path from 'path';
 export const credentialsPath = path.join(path.resolve(__dirname, '..'), 'credentials_g.json');
 
 export const SheetName = 'Full';
-export const UserMappingsSheetRange = 'UserMapping!A2:B';
 export const Scopes = ['https://www.googleapis.com/auth/spreadsheets'];
 export const ApplicationName = 'ExpenseManager';
 export const DefaultColumnCount = 5;

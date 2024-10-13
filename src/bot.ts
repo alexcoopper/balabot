@@ -27,7 +27,6 @@ const groupChatCommands: BotCommand[] = [{ command: 'cash', description: 'Дод
 bot.telegram.setMyCommands(privateChatCommands, { scope: { type: 'all_private_chats' } });
 bot.telegram.setMyCommands(groupChatCommands, { scope: { type: 'all_group_chats' } });
 
-AuthorizationMiddleware.initialize();
 const stage = new Scenes.Stage([amountAndCommentWizard, balanceWizard]);
 
 bot.use(LogMiddleware.log);
