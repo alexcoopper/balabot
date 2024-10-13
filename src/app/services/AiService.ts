@@ -14,7 +14,7 @@ export class AiService {
     }
 
     async generateTrashMessage(): Promise<string> {
-        const prompt = `Згенеруй повідомлення, яку нагадує викинути мусор та викотити баки. 
+        const prompt = `Згенеруй повідомлення, яку нагадує викинути мусор та викотити баки. Це відбувається кожен вечір вівторка.
         То має бути 18+. Не більше 4 речень! Використовуй множину коли звертаєшся, так як це мають робити декілька людей!`;
         return await this.aiServiceApi.generateResponse(prompt);
     }
