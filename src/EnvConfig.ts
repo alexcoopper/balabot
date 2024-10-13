@@ -1,6 +1,5 @@
 import * as functions from '@google-cloud/functions-framework';
 import { HttpService } from './app/services/HttpService';
-import { NotificationService } from './app/services/NotificationService';
 import { Telegraf } from 'telegraf';
 import { BalaBotContext } from './app/models';
 
@@ -19,7 +18,7 @@ export const configureEntryPoints = (bot: Telegraf<BalaBotContext>) => {
         });
 
         exports.scheduledNotification = functions.http('scheduledNotification', (req: any, res: any) => {
-            HttpService.handleScheduledNotification(res, NotificationService);
+            HttpService.handleScheduledNotification(req, res);
         });
     } else {
         console.log('Running in development mode with polling.');
