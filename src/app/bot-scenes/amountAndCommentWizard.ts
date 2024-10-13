@@ -1,13 +1,11 @@
 import { Markup, Scenes } from 'telegraf';
 
-interface MyWizardSession extends Scenes.WizardSessionData {
+export interface AmountWizardSession extends Scenes.WizardSessionData {
     amount?: string;
     comment?: string;
 }
 
-interface MyContext extends Scenes.WizardContext<MyWizardSession> {}
-
-export const amountAndCommentWizard = new Scenes.WizardScene<MyContext>(
+export const amountAndCommentWizard = new Scenes.WizardScene<Scenes.WizardContext<AmountWizardSession>>(
     'amount-and-comment-wizard',
     async (ctx) => {
         await ctx.reply(ctx.from?.username + ' Введите сумму:');

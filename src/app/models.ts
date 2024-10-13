@@ -1,11 +1,14 @@
+import { Scenes } from 'telegraf';
+import { AmountWizardSession } from './bot-scenes/amountAndCommentWizard';
+
 export enum ExpenseOwner {
     Oleksii = 'Oleksii',
-    Dmytro = 'Dmytro'
+    Dmytro = 'Dmytro',
 }
 
 export enum ExpenseType {
     Income = 'Income',
-    Outcome = 'Outcome'
+    Outcome = 'Outcome',
 }
 
 export interface Expense {
@@ -14,3 +17,6 @@ export interface Expense {
     Sum: number;
     ExpenseOwner: ExpenseOwner;
 }
+
+export interface BalaBotSession extends AmountWizardSession {}
+export interface BalaBotContext extends Scenes.WizardContext<BalaBotSession> {}
