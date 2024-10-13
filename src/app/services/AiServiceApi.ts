@@ -20,6 +20,7 @@ export class AiServiceApi {
                         Authorization: `Bearer ${COHERE_API_KEY}`,
                         'Content-Type': 'application/json',
                     },
+                    timeout: 10000,
                 }
             );
             console.log('AiServiceApi: AI response generated successfully. Response:', response.data.text);
