@@ -1,7 +1,16 @@
+import { AiService } from '../services/AiService';
 import { NotificationMessage } from './NotificationMessage';
 
 export class TrashReminderMessage extends NotificationMessage {
-    build(): string {
-        return "Don't forget to take out the trash!";
+    private aiService: AiService;
+
+    constructor() {
+        super();
+        this.aiService = new AiService();
+    }
+
+
+    async build(): Promise<string> {
+        return await this.aiService.generateTrashMessage();
     }
 }
