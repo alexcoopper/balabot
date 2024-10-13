@@ -1,3 +1,3 @@
 export abstract class NotificationMessage {
-    abstract build(): string; 
+    abstract build(): Promise<string>; 
 }

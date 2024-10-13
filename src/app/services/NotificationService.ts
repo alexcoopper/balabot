@@ -19,14 +19,13 @@ export class NotificationService {
 
         const authorizedUsers = users.split(',').map(userId => userId.trim());
 
-        // Temporarily return a list with only the first user
-        return authorizedUsers.slice(0, 1);
+        return authorizedUsers;
     }
 
     // Send notifications to all authorized users
     static async sendNotificationToUsers(notificationType: NotificationType) {
         const notificationMessage = NotificationMessageFactory.create(notificationType);
-        const message = notificationMessage.build();
+        const message = await notificationMessage.build();
 
         const promises = NotificationService.authorizedUserIds.map(userId => {
             const url = `https://api.telegram.org/bot${NotificationService.botToken}/sendMessage`;
