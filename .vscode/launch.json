@@ -1,0 +1,29 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "type": "node",
+        "request": "launch",
+        "name": "Launch Bot with Nodemon and Auto Build",
+        "runtimeExecutable": "nodemon",
+        "program": "${workspaceFolder}/dist/bot.js",
+        "restart": true,
+        "console": "integratedTerminal",
+        "internalConsoleOptions": "neverOpen",
+        "skipFiles": ["<node_internals>/**"],
+        "envFile": "${workspaceFolder}/.env",
+        "runtimeArgs": [
+          "--inspect=9229"
+        ],
+        "outFiles": [
+          "${workspaceFolder}/dist/**/*.js"
+        ],
+        "sourceMaps": true,
+        "env": {
+          "NODE_ENV": "development"
+        },
+        "preLaunchTask": "npm: watch"
+      }
+    ]
+  }
+  

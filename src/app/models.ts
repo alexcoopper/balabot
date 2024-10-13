@@ -6,6 +6,11 @@ export enum ExpenseOwner {
     Dmytro = 'Dmytro',
 }
 
+export enum NotificationType {
+    DailyNotification = 'DailyNotification',
+    TrashReminder = 'TrashReminder'
+}
+
 export enum ExpenseType {
     Income = 'Income',
     Outcome = 'Outcome',
