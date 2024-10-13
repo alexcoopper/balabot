@@ -5,12 +5,12 @@ export class AuthorizationMiddleware {
 
     // Static method to initialize the class with authorized user IDs
     public static initialize() {
-        this.authorizedUserIds = (process.env.AUTHORIZED_USERS || "").split(",").map(Number);
+        this.authorizedUserIds = (process.env.AUTHORIZED_USERS || '').split(',').map(Number);
     }
 
     // Check if the user is authorized (static method)
     private static isAuthorized(ctx: Context): boolean {
-        const userId = ctx.message?.from?.id;
+        const userId = ctx.from?.id;
         return this.authorizedUserIds.includes(userId || 0);
     }
 
@@ -26,5 +26,5 @@ export class AuthorizationMiddleware {
         } else {
             return next(); // Continue to the next action
         }
-    }
+    };
 }
