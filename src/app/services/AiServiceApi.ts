@@ -6,6 +6,7 @@ const COHERE_API_URL = 'https://api.cohere.ai/generate'; // Cohere API URL for t
 export class AiServiceApi {
     async generateResponse(prompt: string): Promise<string> {
         try {
+            console.log('AiServiceApi: Generating AI response...');
             const response = await axios.post(
                 COHERE_API_URL,
                 {
@@ -21,7 +22,7 @@ export class AiServiceApi {
                     },
                 }
             );
-
+            console.log('AiServiceApi: AI response generated successfully. Response:', response.data.text);
             return response.data.text;
         } catch (error: any) {
             console.error('Error generating AI response:', error?.response ? error?.response.data : error);
