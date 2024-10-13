@@ -1,22 +1,18 @@
-import { format } from 'date-fns';
-import { Expense, ExpenseType } from '../models';
-import { GoogleSheetDateTimeFormat } from '../constants';
-import exp from 'constants';
-
+import { Expense } from '../models';
 
 export class ExpenseFilterService {
-    public FilterNewExpenses(newExpenses: Expense[], existingData: any[][]): any[][] {
+    public FilterNewExpenses(newExpenses: Expense[], existingData: any[][]): Expense[] {
         const dateColumnIndex = 0;
         const expenseOwnerColumnIndex = 3;
 
-        const filteredExpenses: any[][] = [];
+        const filteredExpenses: Expense[] = [];
 
         for (const expense of newExpenses) {
-            const exists = existingData.some(row => {
+            const exists = existingData.some((row) => {
                 if (row.length > expenseOwnerColumnIndex) {
                     const rowDate = row[dateColumnIndex]?.toString();
                     const rowOwner = row[expenseOwnerColumnIndex]?.toString();
-                    
+
                     const parsedDate = new Date(rowDate);
                     const expenseDate = expense.Date;
 
@@ -27,16 +23,7 @@ export class ExpenseFilterService {
             });
 
             if (!exists) {
-                const formattedDate = format(expense.Date, GoogleSheetDateTimeFormat);
-                const sum = expense.Sum > 0 ? expense.Sum : -expense.Sum;
-
-                filteredExpenses.push([
-                    formattedDate,
-                    expense.Description,
-                    sum,
-                    expense.ExpenseOwner,
-                    expense.Sum > 0 ? ExpenseType.Income : ExpenseType.Outcome
-                ]);
+                filteredExpenses.push(expense);
             }
         }
 

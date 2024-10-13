@@ -11,7 +11,5 @@ export const handleMessage = (ctx: Context) => {
         if (['status', 'stats'].includes(messageText)) {
             ctx.reply('I am alive!');
         }
-    } else {
-        ctx.reply('Unsupported message type. Please send a text message.');
     }
 };

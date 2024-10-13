@@ -4,6 +4,7 @@
   "description": "",
   "main": "dist/bot.js",
   "scripts": {
+    "prebuild": "ts-node scripts/writeGoogleCredentials.ts",
     "build": "tsc",
     "start": "functions-framework --target=telegramBot",
     "debug": "nodemon --watch 'src/**/*.ts' --exec 'ts-node --inspect=9229' src/bot.ts",

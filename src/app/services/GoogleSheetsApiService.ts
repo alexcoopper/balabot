@@ -1,8 +1,9 @@
 import { google } from 'googleapis';
 import { JWT } from 'google-auth-library';
 import { sheets_v4 } from 'googleapis/build/src/apis/sheets';
-import { DefaultColumnCount, Scopes, SheetName } from '../constants';
-import { loadGoogleCredentials } from './GoogleCredentialsService';
+import { DefaultColumnCount, GoogleSheetDateTimeFormat, Scopes, SheetName, credentialsPath } from '../constants';
+import { Expense, ExpenseType } from '../models';
+import { format } from 'date-fns';
 
 export class GoogleSheetsApiService {
     private sheets: sheets_v4.Sheets;
@@ -16,14 +17,13 @@ export class GoogleSheetsApiService {
 
     // Static async factory method to create the instance
     public static async create(): Promise<GoogleSheetsApiService> {
-        const credentialsPath = loadGoogleCredentials();
-        const spreadsheetId = process.env.SPREADSHEET_ID || "";
+        const spreadsheetId = process.env.SPREADSHEET_ID || '';
         const auth = new google.auth.GoogleAuth({
             keyFile: credentialsPath,
             scopes: Scopes,
         });
 
-        const authClient = await auth.getClient() as JWT;
+        const authClient = (await auth.getClient()) as JWT;
         const sheets = google.sheets({
             version: 'v4',
             auth: authClient,
@@ -43,29 +43,41 @@ export class GoogleSheetsApiService {
         return response.data.values || [];
     }
 
-    public async appendDataToSheet(newRecords: any[][], sheetName: string): Promise<void> {
+    public async appendDataToSheet(newRecords: Expense[], sheetName: string): Promise<void> {
         // Get the last row in the table (from column A)
         const lastRow = await this.getLastRow(sheetName);
-    
+
         // Calculate the next available row
         const nextRow = lastRow + 1;
-    
+
         // Define the range starting from the next available row
-        const range = `${sheetName}!A${nextRow}:Z${nextRow + newRecords.length - 1}`;  // Adjust range based on new records
-    
+        const range = `${sheetName}!A${nextRow}:Z${nextRow + newRecords.length - 1}`; // Adjust range based on new records
+
+        const values = newRecords.map((expense) => {
+            const formattedDate = format(expense.Date, GoogleSheetDateTimeFormat);
+            const sum = expense.Sum > 0 ? expense.Sum : -expense.Sum;
+            return [
+                formattedDate,
+                expense.Description,
+                sum,
+                expense.ExpenseOwner,
+                expense.Sum > 0 ? ExpenseType.Income : ExpenseType.Outcome,
+            ];
+        });
+
         const valueRange = {
-            values: newRecords,
+            values: values,
         };
-    
+
         // Append the new records
         await this.sheets.spreadsheets.values.append({
             spreadsheetId: this.spreadsheetId,
             range: range,
-            valueInputOption: 'USER_ENTERED',  // Use USER_ENTERED to let Sheets handle the data types
+            valueInputOption: 'USER_ENTERED', // Use USER_ENTERED to let Sheets handle the data types
             insertDataOption: 'INSERT_ROWS',
             requestBody: valueRange,
         });
-    
+
         // After appending, adjust filters or tables
         //await this.expandFilterRange(sheetName, nextRow + newRecords.length - 1);
     }
@@ -107,9 +119,7 @@ export class GoogleSheetsApiService {
             spreadsheetId: this.spreadsheetId,
         });
 
-        const sheet = response.data.sheets?.find(
-            s => s.properties?.title === SheetName
-        );
+        const sheet = response.data.sheets?.find((s) => s.properties?.title === SheetName);
 
         return sheet?.properties?.sheetId ?? 0;
     }
@@ -120,9 +130,7 @@ export class GoogleSheetsApiService {
             spreadsheetId: this.spreadsheetId,
         });
 
-        const sheet = response.data.sheets?.find(
-            s => s.properties?.title === SheetName
-        );
+        const sheet = response.data.sheets?.find((s) => s.properties?.title === SheetName);
 
         return sheet?.properties?.gridProperties?.columnCount ?? DefaultColumnCount;
     }
