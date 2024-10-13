@@ -86,7 +86,7 @@ export class GoogleSheetsService {
 
     public async getBalanceByOwnerAndPeriod(owner: ExpenseOwner, period: string): Promise<BalanceSummary | undefined> {
         try {
-            const data = await this.apiService.getSheetData(`Results!A2:G7`);
+            const data = await this.apiService.getSheetData(`ResultsTable`);
 
             const balanceSummaries: BalanceSummary[] = data.map((row) => ({
                 expenseOwner: row[0],
