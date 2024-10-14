@@ -28,9 +28,20 @@ export class NotificationService {
         await NotificationService.sendNotification(notificationType, users);
     }
 
+    static async sendNotificationToAdmin(notificationType: NotificationType) {
+        const users = new UserMappingService().getAllUsers();
+        const admin = users[0];
+        await NotificationService.sendNotification(notificationType, [admin]);
+    }
+
     private static async sendNotification(notificationType: NotificationType, users: number[]) {
         const notificationMessage = NotificationMessageFactory.create(notificationType);
         const message = await notificationMessage.build();
+
+        if(!message) {
+            console.error(`Notification message is empty for type: ${notificationType}`);
+            return;
+        }
 
         const promises = users.map((userId) => {
             const url = `https://api.telegram.org/bot${NotificationService.botToken}/sendMessage`;

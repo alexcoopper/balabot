@@ -27,7 +27,7 @@ export class AiServiceApi {
             return response.data.text;
         } catch (error: any) {
             console.error('Error generating AI response:', error?.response ? error?.response.data : error);
-            return 'Sorry, something went wrong while generating the response.';
+            return '';
         }
     }
 }
