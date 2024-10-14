@@ -11,7 +11,7 @@ const isExcelFile = (fileName: string) => fileName.endsWith('.xlsx') || fileName
 export const handleDocumentUpload = async (ctx: Context) => {
     if (isDocumentMessage(ctx) && isExcelFile(ctx.message.document.file_name)) {
         try {
-            ctx.reply('Start uploading the Excel file...');
+            
             const fileId = ctx.message.document.file_id;
             const googleSheetsService = await GoogleSheetsService.create();
 

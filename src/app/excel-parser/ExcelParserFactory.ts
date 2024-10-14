@@ -4,7 +4,7 @@ import { PrivatDmytroParser } from './PrivatDmytroParser';
 import { IExcelParser } from './IExcelParser';
 
 export class ExcelParserFactory {
-    public GetParser(buffer: Buffer): IExcelParser {
+    public GetParser(buffer: Buffer): IExcelParser|null {
         const workbook = XLSX.read(buffer, { type: 'buffer' });
         const worksheet = workbook.Sheets[workbook.SheetNames[0]];
         
@@ -22,7 +22,7 @@ export class ExcelParserFactory {
                 return new PrivatDmytroParser(workbook);
             }
         }
-
-        throw new Error('Unknown Excel format');
+        console.log("ExcelParserFactory: Unsupported Excel file format.");
+        return null;
     }
 }

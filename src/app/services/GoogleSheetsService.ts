@@ -43,6 +43,13 @@ export class GoogleSheetsService {
 
             // Process and upload data to Google Sheets
             const parser = this.excelParserFactory.GetParser(buffer);
+
+            if (!parser) {
+                return;
+            }
+
+            replyCallback('Start uploading the Excel file\\.\\.\\.');
+
             const expenses = parser.ParseExcel();
             const newRecordsCount = await this.WriteExpensesToSheet(expenses);
 

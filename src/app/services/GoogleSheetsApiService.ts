@@ -1,7 +1,7 @@
 import { google } from 'googleapis';
 import { JWT } from 'google-auth-library';
 import { sheets_v4 } from 'googleapis/build/src/apis/sheets';
-import { DefaultColumnCount, GoogleSheetDateTimeFormat, Scopes, SheetName, credentialsPath } from '../constants';
+import { DefaultColumnCount, GoogleSheetDateTimeFormat, Scopes, SheetName } from '../constants';
 import { Expense, ExpenseType } from '../models';
 import { format } from 'date-fns';
 
@@ -18,8 +18,12 @@ export class GoogleSheetsApiService {
     // Static async factory method to create the instance
     public static async create(): Promise<GoogleSheetsApiService> {
         const spreadsheetId = process.env.SPREADSHEET_ID || '';
+        const credentialsBase64 = process.env.GOOGLE_CREDENTIALS || '';
+        const credentialsBuffer = Buffer.from(credentialsBase64, 'base64');
+        const credentials = JSON.parse(credentialsBuffer.toString('utf-8'));
+        
         const auth = new google.auth.GoogleAuth({
-            keyFile: credentialsPath,
+            credentials,
             scopes: Scopes,
         });
 
