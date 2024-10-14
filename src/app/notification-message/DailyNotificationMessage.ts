@@ -10,6 +10,6 @@ export class DailyNotificationMessage extends NotificationMessage {
     }
 
     async build(): Promise<string> {
-        return await this.aiService.generateDailyJoke();
+        return await this.aiService.generateDailyMessage();
     }
 }

@@ -10,6 +10,7 @@ import { handleCallbackQuery } from './app/bot-handlers/callbackQueryHandler';
 import { BalaBotContext } from './app/models';
 import { BotCommand } from '@telegraf/types';
 import { balanceWizard } from './app/bot-scenes/balanceWizard';
+import { newChatMemberHandler } from './app/bot-handlers/newChatMemberHandler';
 
 configEnv();
 
@@ -37,6 +38,7 @@ bot.use(stage.middleware());
 bot.command('cash', (ctx) => ctx.scene.enter('amount-and-comment-wizard'));
 bot.command('balance', (ctx) => ctx.scene.enter('balance-wizard'));
 
+bot.on('new_chat_members', newChatMemberHandler);
 bot.on('document', handleDocumentUpload);
 bot.on('message', handleMessage);
 bot.on('callback_query', handleCallbackQuery);

@@ -1,6 +1,7 @@
 import { Context } from 'telegraf';
 import { NotificationType } from '../models';
 import { NotificationService } from '../services/NotificationService';
+import { AiService } from '../services/AiService';
 
 // Type guard to check if the message contains text
 function isTextMessage(ctx: Context): ctx is Context & { message: { text: string } } {
@@ -18,6 +19,20 @@ export const handleMessage = async (ctx: Context) => {
         }
         if (messageText === 'test -notif 2') {
             await NotificationService.sendNotificationToTestGroupChat(NotificationType.TrashReminder);
+        }
+
+        if ([
+            'будем', 'пити', 'чай', 'нема', 'варіант', 'номер', 'можна', 'тех', 'паспорт', 'є',
+            'гривень', 'круть', 'відмовилась', 'вино', 'пізніше', 'сир', 'апарат', 'кушати', 'їсти',
+            'обід', 'вечеря', 'вечір', 'цікаве', 'коньяк', 'ром', 'сухариками', 'фільм', 'серіал', 'серійк', 'зроб', 'сушарка', 
+            'борщ', 'малих', 'діти', 'діт', 'пельмені', 'хліб', 'зварю', 'суп', 'залишились', 'закупи', 'атб', 'ужгород', 
+            'планува', 'приїха', 'ході', 'чекал', 'грати', 'кака', 'порядки', 'страшно', 
+            'стіл', 'візит', 'повідомте', 'хвилин', 'стол', 'сплат', 'привіт', 'хто'
+        ].some(word => messageText.includes(word))) {
+            const replay = await new AiService().generateRandomMessage(messageText);
+            ctx.reply(replay, {
+                reply_to_message_id: ctx.message.message_id
+            } as any);
         }
     }
 };
