@@ -1,8 +1,3 @@
-import * as path from 'path';
-
-// Define a constant path for the credentials file in the 'dist' directory
-export const credentialsPath = path.join(path.resolve(__dirname, '..'), 'credentials_g.json');
-
 export const SheetName = 'Full';
 export const Scopes = ['https://www.googleapis.com/auth/spreadsheets'];
 export const ApplicationName = 'ExpenseManager';

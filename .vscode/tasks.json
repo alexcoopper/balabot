@@ -2,13 +2,6 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "prebuild",
-      "type": "npm",
-      "script": "prebuild",
-      "isBackground": false,
-      "problemMatcher": []
-    },
-    {
       "label": "build", // New task to build the project
       "type": "npm",
       "script": "build", // This runs "tsc" to compile the project into the dist folder
@@ -42,7 +35,7 @@
     },
     {
       "label": "prebuildAndWatch",
-      "dependsOn": ["prebuild", "build", "npm: watch"], // Ensure "build" happens before watch
+      "dependsOn": ["build", "npm: watch"], // Ensure "build" happens before watch
       "problemMatcher": []
     }
   ]

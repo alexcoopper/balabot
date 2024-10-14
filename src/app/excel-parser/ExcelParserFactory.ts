@@ -9,7 +9,7 @@ export class ExcelParserFactory {
         PrivatDmytroParser,
     ];
 
-    public GetParser(buffer: Buffer): IExcelParser {
+    public GetParser(buffer: Buffer): IExcelParser|null {
         const workbook = XLSX.read(buffer, { type: 'buffer' });
         const worksheet = workbook.Sheets[workbook.SheetNames[0]];
 
@@ -20,7 +20,7 @@ export class ExcelParserFactory {
                 return new Parser(data);
             }
         }
-
-        throw new Error('Unknown Excel format');
+        console.log("ExcelParserFactory: Unsupported Excel file format.");
+        return null;
     }
 }
