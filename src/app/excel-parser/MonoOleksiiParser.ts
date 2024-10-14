@@ -5,19 +5,21 @@ import { Expense, ExpenseOwner } from '../models';
 import { parse } from 'date-fns';
 
 export class MonoOleksiiParser implements IExcelParser {
-    private workbook: XLSX.WorkBook;
+    private workbookData: string[][];
 
-    constructor(workbook: XLSX.WorkBook) {
-        this.workbook = workbook;
+    constructor(workbookData: string[][]) {
+        this.workbookData = workbookData;
+    }
+
+    public static isValidFormat(data: any[]): boolean {
+        return true;
     }
 
     public ParseExcel(): Expense[] {
         const expenses: Expense[] = [];
-        const worksheet = this.workbook.Sheets[this.workbook.SheetNames[0]];
-        const data = XLSX.utils.sheet_to_json<any>(worksheet, { header: 1 });
 
-        for (let row = 22; row < data.length; row++) {
-            const rowData = data[row];
+        for (let row = 22; row < this.workbookData.length; row++) {
+            const rowData = this.workbookData[row];
             if (!rowData || !rowData[0]) continue;
 
             const date = rowData[0];

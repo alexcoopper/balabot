@@ -4,22 +4,20 @@ import { PrivatDmytroParser } from './PrivatDmytroParser';
 import { IExcelParser } from './IExcelParser';
 
 export class ExcelParserFactory {
+    private parsers: Array<{isValidFormat(data: string[][]): boolean; new(data: string[][]): IExcelParser }> = [
+        MonoOleksiiParser,
+        PrivatDmytroParser,
+    ];
+
     public GetParser(buffer: Buffer): IExcelParser {
         const workbook = XLSX.read(buffer, { type: 'buffer' });
         const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-        
-        // Assert the return type from sheet_to_json to be an array of arrays
-        const firstRow: any[] = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as any[][];
 
-        const firstCell = firstRow[0]?.[0];  // Safely access the first cell
+        const data: any[] = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as any[][];
 
-        if (typeof firstCell === 'string') {
-            if (firstCell.includes('Клієнт: Баланенко Олексій Євгенович')) {
-                return new MonoOleksiiParser(workbook);
-            }
-
-            if (firstCell.includes('Виписка з Ваших карток за період')) {
-                return new PrivatDmytroParser(workbook);
+        for (const Parser of this.parsers) {
+            if (Parser.isValidFormat(data)) {
+                return new Parser(data);
             }
         }
 
