@@ -15,12 +15,20 @@ export const handleDocumentUpload = async (ctx: Context) => {
             const fileId = ctx.message.document.file_id;
             const googleSheetsService = await GoogleSheetsService.create();
 
-            await googleSheetsService.handleExcelFile(fileId, ctx.telegram, (message: string) =>
-                ctx.reply(message, { parse_mode: 'MarkdownV2' }),
-            );
+            await googleSheetsService.handleExcelFile(fileId, ctx.telegram, async (message: string) => {
+                try {
+                    await ctx.reply(message, { parse_mode: 'MarkdownV2' });
+                } catch (replyError) {
+                    console.error('Error while sending reply:', replyError);
+                }
+            });
         } catch (error) {
             console.error('Error while handling document upload:', error);
-            ctx.reply('Failed to upload the document. Please try again.');
+            try {
+                await ctx.reply('Failed to upload the document. Please try again.');
+            } catch (replyError) {
+                console.error('Error while sending error reply:', replyError);
+            }
         }
     }
 };

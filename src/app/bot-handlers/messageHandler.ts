@@ -12,7 +12,7 @@ export const handleMessage = async (ctx: Context) => {
     if (isTextMessage(ctx)) {
         const messageText = ctx.message.text.toLowerCase();
         if (['status', 'stats'].includes(messageText)) {
-            ctx.reply('I am alive!');
+            await ctx.reply('I am alive!');
         }
         if (messageText === 'test -notif 1') {
             await NotificationService.sendNotificationToAdmin(NotificationType.DailyNotification);
@@ -32,7 +32,7 @@ export const handleMessage = async (ctx: Context) => {
             const replay = await new AiService().generateRandomMessage(messageText);
 
             if(replay != '') {
-                ctx.reply(replay, {
+                await ctx.reply(replay, {
                     reply_to_message_id: ctx.message.message_id
                 } as any);
             }

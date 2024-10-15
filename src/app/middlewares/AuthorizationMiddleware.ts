@@ -10,14 +10,14 @@ export class AuthorizationMiddleware {
     }
 
     // Send unauthorized message (static method)
-    private static sendUnauthorizedMessage(ctx: Context): void {
-        ctx.reply('You are not authorized to use this bot.');
+    private static async sendUnauthorizedMessage(ctx: Context): Promise<void> {
+        await ctx.reply('You are not authorized to use this bot.');
     }
 
     // Static middleware function for authorization
-    public static authorize: MiddlewareFn<Context> = (ctx, next) => {
+    public static authorize: MiddlewareFn<Context> = async (ctx, next) => {
         if (!this.isAuthorized(ctx)) {
-            this.sendUnauthorizedMessage(ctx);
+            await this.sendUnauthorizedMessage(ctx);
         } else {
             return next(); // Continue to the next action
         }
