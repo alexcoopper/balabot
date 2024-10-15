@@ -1,6 +1,7 @@
 import { Scenes } from 'telegraf';
 import { AmountWizardSession } from './bot-scenes/amountAndCommentWizard';
 import { BalanceWizardSession } from './bot-scenes/balanceWizard';
+import { SetOurWizardSession } from './bot-scenes/setOurWizard';
 
 export enum ExpenseOwner {
     Oleksii = 'Oleksii',
@@ -10,6 +11,7 @@ export enum ExpenseOwner {
 export enum NotificationType {
     DailyNotification = 'DailyNotification',
     TrashReminder = 'TrashReminder',
+    CacheAddedNotification = 'CacheAddedNotification',
 }
 
 export enum ExpenseType {
@@ -40,5 +42,5 @@ export interface BalanceSummary {
     balance: number;
 }
 
-export interface BalaBotSession extends AmountWizardSession, BalanceWizardSession {}
+export interface BalaBotSession extends AmountWizardSession, BalanceWizardSession, SetOurWizardSession {}
 export interface BalaBotContext extends Scenes.WizardContext<BalaBotSession> {}

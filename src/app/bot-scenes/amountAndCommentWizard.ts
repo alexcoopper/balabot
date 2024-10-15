@@ -1,7 +1,8 @@
 import { Markup, Scenes } from 'telegraf';
-import { Expense } from '../models';
+import { Expense, NotificationType } from '../models';
 import { GoogleSheetsService } from '../services/GoogleSheetsService';
 import { UserMappingService } from '../services/UserMappingService';
+import { NotificationService } from '../services/NotificationService';
 
 export interface AmountWizardSession extends Scenes.WizardSessionData {
     amount?: string;
@@ -76,6 +77,12 @@ const handleConfirmationStep = async (ctx: Scenes.WizardContext<AmountWizardSess
             await ctx.reply('📝 Додаю дані в таблицю...');
             await googleSheetsService.WriteExpensesToSheet([expense]);
             await ctx.reply('Дані успішно додані.');
+
+            await NotificationService.sendNotificationToGroupChat(NotificationType.CacheAddedNotification, {
+                author: username,
+                amount: ctx.scene.session.amount,
+                description: ctx.scene.session.comment
+            });
         } else {
             await ctx.reply('Дія скасована.');
         }

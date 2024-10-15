@@ -9,7 +9,7 @@ export const newChatMemberHandler = async (ctx: NarrowedContext<Context, Update.
         const botAdded = newMembers.some(member => member.id === botId);
 
         if (botAdded) {
-            await ctx.reply('Привіт, кожані! 🦇 Тепер батя в чаті! 👑 Готуйте кеш, бо тут буде жарко! 🔥 Використовуйте /cash щоб додати кеш, або пишіть у приватні — буде гаряче... 😏');
+            await ctx.reply('Привіт, кожані! 🦇 Тепер батя в чаті! 👑 Готуйте пузяки, бо тут буде спекотно! 🔥 А також, пишіть у приватні — буде гаряче... 😏');
         }
     }
 };

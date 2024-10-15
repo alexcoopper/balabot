@@ -1,7 +1,7 @@
 import { google } from 'googleapis';
 import { JWT } from 'google-auth-library';
 import { sheets_v4 } from 'googleapis/build/src/apis/sheets';
-import { DefaultColumnCount, GoogleSheetDateTimeFormat, Scopes, SheetName } from '../constants';
+import { DefaultColumnCount, GoogleSheetDateTimeFormat, Scopes, MainSheetName } from '../constants';
 import { Expense, ExpenseType } from '../models';
 import { format } from 'date-fns';
 
@@ -47,7 +47,7 @@ export class GoogleSheetsApiService {
         return response.data.values || [];
     }
 
-    public async appendDataToSheet(newRecords: Expense[], sheetName: string): Promise<void> {
+    public async appendDataToSheet(values: (string|number)[][], sheetName: string): Promise<void> {
         // Get the last row in the table (from column A)
         const lastRow = await this.getLastRow(sheetName);
 
@@ -55,19 +55,7 @@ export class GoogleSheetsApiService {
         const nextRow = lastRow + 1;
 
         // Define the range starting from the next available row
-        const range = `${sheetName}!A${nextRow}:Z${nextRow + newRecords.length - 1}`; // Adjust range based on new records
-
-        const values = newRecords.map((expense) => {
-            const formattedDate = format(expense.Date, GoogleSheetDateTimeFormat);
-            const sum = expense.Sum > 0 ? expense.Sum : -expense.Sum;
-            return [
-                formattedDate,
-                expense.Description,
-                sum,
-                expense.ExpenseOwner,
-                expense.Sum > 0 ? ExpenseType.Income : ExpenseType.Outcome,
-            ];
-        });
+        const range = `${sheetName}!A${nextRow}:Z${nextRow + values.length - 1}`; // Adjust range based on new records
 
         const valueRange = {
             values: values,
@@ -123,7 +111,7 @@ export class GoogleSheetsApiService {
             spreadsheetId: this.spreadsheetId,
         });
 
-        const sheet = response.data.sheets?.find((s) => s.properties?.title === SheetName);
+        const sheet = response.data.sheets?.find((s) => s.properties?.title === MainSheetName);
 
         return sheet?.properties?.sheetId ?? 0;
     }
@@ -134,7 +122,7 @@ export class GoogleSheetsApiService {
             spreadsheetId: this.spreadsheetId,
         });
 
-        const sheet = response.data.sheets?.find((s) => s.properties?.title === SheetName);
+        const sheet = response.data.sheets?.find((s) => s.properties?.title === MainSheetName);
 
         return sheet?.properties?.gridProperties?.columnCount ?? DefaultColumnCount;
     }

@@ -15,8 +15,8 @@ export const handleDocumentUpload = async (ctx: Context) => {
             const fileId = ctx.message.document.file_id;
             const googleSheetsService = await GoogleSheetsService.create();
 
-            await googleSheetsService.handleExcelFile(fileId, ctx.telegram, (message: string) =>
-                ctx.reply(message, { parse_mode: 'MarkdownV2' }),
+            await googleSheetsService.handleExcelFile(fileId, ctx.telegram, async (message: string) =>
+                await ctx.reply(message, { parse_mode: 'MarkdownV2', link_preview_options: { is_disabled: true }}),
             );
         } catch (error) {
             console.error('Error while handling document upload:', error);

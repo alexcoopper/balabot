@@ -1,4 +1,5 @@
-export const SheetName = 'Full';
+export const MainSheetName = 'Full';
+export const OwnExpensesSheetName = 'OwnExpenses';
 export const Scopes = ['https://www.googleapis.com/auth/spreadsheets'];
 export const ApplicationName = 'ExpenseManager';
 export const DefaultColumnCount = 5;
