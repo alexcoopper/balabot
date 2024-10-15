@@ -49,12 +49,14 @@ export class GoogleSheetsService {
                 return;
             }
 
-            replyCallback('Start uploading the Excel file\\.\\.\\.');
+            replyCallback('Починаю\\.\\.\\.');
 
             const expenses = parser.ParseExcel();
             const newRecordsCount = await this.WriteExpensesToSheet(expenses);
 
-            const url = GoogleSheetPageUrlTemplate.replace('{sheetId}', process.env.SPREADSHEET_ID || '');
+            const url = GoogleSheetPageUrlTemplate
+                .replace('{spreadsheetId}', process.env.SPREADSHEET_ID || '')
+                .replace('{sheetId}', '0');
             let messageTemplate = '';
             if (newRecordsCount > 0) {
                 messageTemplate = `Успішно загружено! ${newRecordsCount} нових записів додано. Посилання на документ urlPart.`;
