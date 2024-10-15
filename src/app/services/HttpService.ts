@@ -30,7 +30,7 @@ export class HttpService {
                 return res.status(400).send('Bad Request: "type" is required.');
             }
 
-            await NotificationService.sendNotificationToUsers(type);
+            await NotificationService.sendNotificationToGroupChat(type);
             console.log('handleScheduledNotification: scheduled notifications sent successfully.');
             res.status(200).send('Notifications sent successfully.');
         } catch (error) {
