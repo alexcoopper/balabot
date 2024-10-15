@@ -44,4 +44,4 @@ readme.md
 env-vars.json
 deploy-all.bat
 deploy-bot.bat
-deploy-scheduler.bat
+deploy-sd.bat

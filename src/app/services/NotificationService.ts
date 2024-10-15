@@ -43,16 +43,21 @@ export class NotificationService {
             return;
         }
 
-        const promises = users.map((userId) => {
-            const url = `https://api.telegram.org/bot${NotificationService.botToken}/sendMessage`;
-            const data = {
-                chat_id: userId,
-                text: message,
-            };
-            return axios.post(url, data);
-        });
-
-        await Promise.all(promises);
+        try {
+            const promises = users.map((userId) => {
+                const url = `https://api.telegram.org/bot${NotificationService.botToken}/sendMessage`;
+                const data = {
+                    chat_id: userId,
+                    text: message,
+                };
+                return axios.post(url, data);
+            });
+    
+            await Promise.all(promises);
+        } catch (error: any) {
+            console.error('Failed to send a notification. Response data:', error?.response?.data);
+            return;  
+        }
         console.log(`Notification sent: "${message}", type: ${notificationType}, to users: ${users}`);
     }
 }
