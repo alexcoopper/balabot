@@ -4,7 +4,7 @@ import { LogMiddleware } from './app/middlewares/LogMiddleware';
 import { ErrorMiddleware } from './app/middlewares/ErrorMiddleware';
 import { handleDocumentUpload } from './app/bot-handlers/documentHandler';
 import { handleMessage } from './app/bot-handlers/messageHandler';
-import { amountAndCommentWizard, AmountWizardSession } from './app/bot-scenes/amountAndCommentWizard';
+import { addCashWizard, AddCashWizardSession } from './app/bot-scenes/amountAndCommentWizard';
 import { configEnv, configureEntryPoints } from './EnvConfig';
 import { handleCallbackQuery } from './app/bot-handlers/callbackQueryHandler';
 import { BalaBotContext } from './app/models';
@@ -28,14 +28,14 @@ const groupChatCommands: BotCommand[] = [{ command: 'cash', description: 'Дод
 bot.telegram.setMyCommands(privateChatCommands, { scope: { type: 'all_private_chats' } });
 bot.telegram.setMyCommands(groupChatCommands, { scope: { type: 'all_group_chats' } });
 
-const stage = new Scenes.Stage([amountAndCommentWizard, balanceWizard]);
+const stage = new Scenes.Stage([addCashWizard, balanceWizard]);
 
 bot.use(LogMiddleware.log);
 bot.use(AuthorizationMiddleware.authorize);
 bot.use(session());
 bot.use(stage.middleware());
 
-bot.command('cash', (ctx) => ctx.scene.enter('amount-and-comment-wizard'));
+bot.command('cash', (ctx) => ctx.scene.enter('add-cash-wizard'));
 bot.command('balance', (ctx) => ctx.scene.enter('balance-wizard'));
 
 bot.on('new_chat_members', newChatMemberHandler);

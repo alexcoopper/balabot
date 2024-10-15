@@ -53,7 +53,9 @@ export class GoogleSheetsService {
             const expenses = parser.ParseExcel();
             const newRecordsCount = await this.WriteExpensesToSheet(expenses);
 
-            const url = GoogleSheetPageUrlTemplate.replace('{sheetId}', process.env.SPREADSHEET_ID || '');
+            const url = GoogleSheetPageUrlTemplate
+                .replace('{spreadsheetId}', process.env.SPREADSHEET_ID || '')
+                .replace('{sheetId}', '0');
             let messageTemplate = '';
             if (newRecordsCount > 0) {
                 messageTemplate = `Excel data uploaded successfully! ${newRecordsCount} new record(s) added. You can review the updated data urlPart.`;

@@ -1,5 +1,5 @@
 import { Scenes } from 'telegraf';
-import { AmountWizardSession } from './bot-scenes/amountAndCommentWizard';
+import { AddCashWizardSession } from './bot-scenes/amountAndCommentWizard';
 import { BalanceWizardSession } from './bot-scenes/balanceWizard';
 
 export enum ExpenseOwner {
@@ -40,5 +40,5 @@ export interface BalanceSummary {
     balance: number;
 }
 
-export interface BalaBotSession extends AmountWizardSession, BalanceWizardSession {}
+export interface BalaBotSession extends AddCashWizardSession, BalanceWizardSession {}
 export interface BalaBotContext extends Scenes.WizardContext<BalaBotSession> {}

@@ -2,18 +2,19 @@ import { Markup, Scenes } from 'telegraf';
 import { Expense } from '../models';
 import { GoogleSheetsService } from '../services/GoogleSheetsService';
 import { UserMappingService } from '../services/UserMappingService';
+import { GoogleSheetPageUrlTemplate } from '../constants';
 
-export interface AmountWizardSession extends Scenes.WizardSessionData {
+export interface AddCashWizardSession extends Scenes.WizardSessionData {
     amount?: string;
     comment?: string;
 }
 
-const askAmountAndCommentStep = async (ctx: Scenes.WizardContext<AmountWizardSession>) => {
+const askAmountAndCommentStep = async (ctx: Scenes.WizardContext<AddCashWizardSession>) => {
     await ctx.reply('Введіть суму та коментар через пробіл.\n' + 'Наприклад: 150.50 покупка продуктів');
     return ctx.wizard.next();
 };
 
-const confirmStep = async (ctx: Scenes.WizardContext<AmountWizardSession>) => {
+const confirmStep = async (ctx: Scenes.WizardContext<AddCashWizardSession>) => {
     if (ctx.message && 'text' in ctx.message) {
         const inputText = ctx.message.text.trim();
         const firstSpaceIndex = inputText.indexOf(' ');
@@ -50,7 +51,7 @@ const confirmStep = async (ctx: Scenes.WizardContext<AmountWizardSession>) => {
     }
 };
 
-const handleConfirmationStep = async (ctx: Scenes.WizardContext<AmountWizardSession>) => {
+const handleConfirmationStep = async (ctx: Scenes.WizardContext<AddCashWizardSession>) => {
     if (ctx.callbackQuery && 'data' in ctx.callbackQuery) {
         const callbackData = ctx.callbackQuery.data;
 
@@ -75,7 +76,19 @@ const handleConfirmationStep = async (ctx: Scenes.WizardContext<AmountWizardSess
             await ctx.sendChatAction('typing');
             await ctx.reply('📝 Додаю дані в таблицю...');
             await googleSheetsService.WriteExpensesToSheet([expense]);
-            await ctx.reply('Дані успішно додані.');
+
+
+            const cashSheetID = "1015706772";
+            const url = GoogleSheetPageUrlTemplate
+                .replace('{spreadsheetId}', process.env.SPREADSHEET_ID || '')
+                .replace('{sheetId}', cashSheetID);
+
+            let messageTemplate = 'Дані успішно додані. Ви можете переглянути повну інформацію про готівку url';
+            const message = messageTemplate
+            .replace(/([_*\[\]()~`>#+\-=|{}.!])/g, '\\$1')
+            .replace('url', `[тут](${url})`);
+
+            await ctx.reply(message, { parse_mode: 'MarkdownV2', link_preview_options: { is_disabled: true } });
         } else {
             await ctx.reply('Дія скасована.');
         }
@@ -88,8 +101,8 @@ const handleConfirmationStep = async (ctx: Scenes.WizardContext<AmountWizardSess
     return ctx.scene.leave();
 };
 
-export const amountAndCommentWizard = new Scenes.WizardScene<Scenes.WizardContext<AmountWizardSession>>(
-    'amount-and-comment-wizard',
+export const addCashWizard = new Scenes.WizardScene<Scenes.WizardContext<AddCashWizardSession>>(
+    'add-cash-wizard',
     askAmountAndCommentStep,
     confirmStep,
     handleConfirmationStep,
