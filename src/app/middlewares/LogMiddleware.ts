@@ -2,7 +2,7 @@ export class LogMiddleware {
     static log(ctx: any, next: Function) {
         const chatId = ctx.chat?.id;
         const senderName = `${ctx.from?.first_name || ''} ${ctx.from?.last_name || ''}`.trim();
-        const username = ctx.from?.username ? `(@${ctx.from.username})` : '';
+        const username = (ctx.from?.username ? `(@${ctx.from.username})` : ctx.from?.first_name) || '';
 
         // Check if it's a text message
         if (ctx.message && 'text' in ctx.message) {

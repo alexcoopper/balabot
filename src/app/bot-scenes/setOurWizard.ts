@@ -33,7 +33,7 @@ const confirmStep = async (ctx: Scenes.WizardContext<SetOurWizardSession>) => {
             return ctx.scene.leave();
         }
 
-        const username = ctx.from?.username || '';
+        const username = ctx.from?.username || ctx.from?.first_name || '';
         const expense = {
             Date: new Date(),
             Description: username,

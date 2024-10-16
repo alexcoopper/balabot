@@ -66,7 +66,7 @@ const handleConfirmationStep = async (ctx: Scenes.WizardContext<AddCashWizardSes
                 return ctx.scene.leave();
             }
 
-            const username = ctx.from?.username || '';
+            const username = ctx.from?.username || ctx.from?.first_name ||'';
             const expense = {
                 Date: new Date(),
                 Description: `готівка (${username}): ` + ctx.scene.session.comment,
