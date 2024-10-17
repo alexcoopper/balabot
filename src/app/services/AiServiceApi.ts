@@ -23,8 +23,14 @@ export class AiServiceApi {
                     timeout: 20000,
                 },
             );
-            console.log('AiServiceApi: AI response generated successfully. Response:', response.data.text);
-            return response.data.text;
+            let aiResponse = response.data.text.trim();
+
+            if (aiResponse.startsWith('"') && aiResponse.endsWith('"')) {
+                aiResponse = aiResponse.slice(1, -1);
+            }
+
+            console.log('AiServiceApi: AI response generated successfully. Response:', aiResponse);
+            return aiResponse;
         } catch (error: any) {
             console.error('Error generating AI response:', error?.response ? error?.response.data : error);
             return '';
