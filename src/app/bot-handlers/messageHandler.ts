@@ -1,5 +1,5 @@
 import { Context } from 'telegraf';
-import { NotificationType } from '../models';
+import { fromNumberToNotificationType, NotificationType } from '../models';
 import { NotificationService } from '../services/NotificationService';
 import { AiService } from '../services/AiService';
 import { UserInfoService } from '../services/UserInfoService';
@@ -20,11 +20,18 @@ export const handleMessage = async (ctx: Context) => {
         if (['status', 'stats'].includes(messageText)) {
             await ctx.reply('I am alive!');
         }
-        if (messageText === 'test -notif 1') {
-            await NotificationService.sendNotificationToAdmin(NotificationType.DailyNotification);
-        }
-        if (messageText === 'test -notif 2') {
-            await NotificationService.sendNotificationToAdmin(NotificationType.TrashReminder);
+        if (messageText.toLocaleLowerCase().includes('test notif')) {
+            const parts = messageText.split(' ');
+
+            if (parts.length > 2) {
+                const typeValue = parts[2];
+                const type = fromNumberToNotificationType(parseInt(typeValue));
+                if(!type) {
+                    await ctx.reply('Invalid notification type');
+                    return;
+                }
+                return await NotificationService.sendNotificationToAdmin(type);
+            }
         }
 
         const botUsername = ctx.botInfo.username;

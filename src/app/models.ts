@@ -12,6 +12,18 @@ export enum NotificationType {
     DailyNotification = 'DailyNotification',
     TrashReminder = 'TrashReminder',
     CacheAddedNotification = 'CacheAddedNotification',
+    HealthyMessage = 'HealthyMessage',
+    MonobankTransaction = 'MonobankTransaction', // specific type for Monobank transactions
+}
+
+const NotificationTypeMapping: Record<number, NotificationType> = {
+    1: NotificationType.DailyNotification,
+    2: NotificationType.TrashReminder,
+    3: NotificationType.HealthyMessage,
+};
+
+export function fromNumberToNotificationType(num: number): NotificationType | undefined {
+    return NotificationTypeMapping[num];
 }
 
 export enum ExpenseType {

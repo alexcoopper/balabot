@@ -45,3 +45,5 @@ env-vars.json
 deploy-all.bat
 deploy-bot.bat
 deploy-sd.bat
+
+monobank-webhook/deploy-mono.bat

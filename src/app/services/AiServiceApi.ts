@@ -11,7 +11,7 @@ export class AiServiceApi {
                 COHERE_API_URL,
                 {
                     model: 'command-xlarge-nightly',
-                    prompt: prompt,
+                    prompt: prompt.replace(/\s+/g, ' ').trim(),
                     max_tokens: 500,
                     temperature: 0.75,
                 },

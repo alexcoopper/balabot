@@ -1,0 +1,17 @@
+{
+  "name": "monobank-webhook",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/monobankWebhookHandler.js",
+  "scripts": {
+    "build1": "npx tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/tasks": "^5.5.1",
+    "uuid": "^11.0.2"
+  }
+}

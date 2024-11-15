@@ -20,6 +20,10 @@ export const configureEntryPoints = (bot: Telegraf<BalaBotContext>) => {
         exports.scheduledNotification = functions.http('scheduledNotification', (req: any, res: any) => {
             HttpService.handleScheduledNotification(req, res);
         });
+
+        exports.monobankWebhook = functions.http('monobankWebhook', (req: any, res: any) => {
+            HttpService.handleMonobankWebhook(req, res);
+        });
     } else {
         console.log('Running in development mode with polling.');
 
@@ -31,3 +35,5 @@ export const configureEntryPoints = (bot: Telegraf<BalaBotContext>) => {
         process.once('SIGTERM', () => bot.stop('SIGTERM'));
     }
 };
+
+
